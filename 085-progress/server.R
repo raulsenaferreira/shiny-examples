@@ -1,11 +1,38 @@
-shinyServer(function(input, output) {
+# This function computes a new data set. It can optionally take a function,
+# updateProgress, which will be called as each row of data is added.
+compute_data <- function(updateProgress = NULL) {
+  # Create 0-row data frame which will be used to store data
+  dat <- data.frame(x = numeric(0), y = numeric(0))
+
+  for (i in 1:10) {
+    Sys.sleep(0.25)
+
+    # Compute new row of data
+    new_row <- data.frame(x = rnorm(1), y = rnorm(1))
+
+    # If we were passed a progress update function, call it
+    if (is.function(updateProgress)) {
+      text <- paste0("x:", round(new_row$x, 2), " y:", round(new_row$y, 2))
+      updateProgress(detail = text)
+    }
+
+    # Add the new row of data
+    dat <- rbind(dat, new_row)
+  }
+
+  dat
+}
+
+function(input, output) {
 
   # This example uses the withProgress, which is a simple-to-use wrapper around
   # the progress API.
   output$plot <- renderPlot({
     input$goPlot # Re-run when button is clicked
 
-      withProgress(message = 'Creating plot', value = 0.1, {
+    style <- isolate(input$style)
+
+      withProgress(message = 'Creating plot', style = style, value = 0.1, {
         Sys.sleep(0.25)
 
         # Create 0-row data frame which will be used to store data
@@ -33,7 +60,7 @@ shinyServer(function(input, output) {
         # Another nested progress indicator.
         # When value=NULL, progress text is displayed, but not a progress bar.
         withProgress(message = 'And this also', detail = "This other thing",
-                     value = NULL, {
+                     style = style, value = NULL, {
 
           Sys.sleep(0.75)
         })
@@ -54,8 +81,10 @@ shinyServer(function(input, output) {
   output$table <- renderTable({
     input$goTable
 
+    style <- isolate(input$style)
+
     # Create a Progress object
-    progress <- shiny::Progress$new()
+    progress <- shiny::Progress$new(style = style)
     progress$set(message = "Computing data", value = 0)
     # Close the progress when this reactive exits (even if there's an error)
     on.exit(progress$close())
@@ -78,30 +107,4 @@ shinyServer(function(input, output) {
     compute_data(updateProgress)
   })
 
-})
-
-
-# This function computes a new data set. It can optionally take a function,
-# updateProgress, which will be called as each row of data is added.
-compute_data <- function(updateProgress = NULL) {
-  # Create 0-row data frame which will be used to store data
-  dat <- data.frame(x = numeric(0), y = numeric(0))
-
-  for (i in 1:10) {
-    Sys.sleep(0.25)
-
-    # Compute new row of data
-    new_row <- data.frame(x = rnorm(1), y = rnorm(1))
-
-    # If we were passed a progress update function, call it
-    if (is.function(updateProgress)) {
-      text <- paste0("x:", round(new_row$x, 2), " y:", round(new_row$y, 2))
-      updateProgress(detail = text)
-    }
-
-    # Add the new row of data
-    dat <- rbind(dat, new_row)
-  }
-
-  dat
 }

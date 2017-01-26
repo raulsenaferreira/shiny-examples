@@ -1,7 +1,7 @@
 library(shiny)
 library(mclust)
 
-shinyServer(function(input, output, session) {
+function(input, output, session) {
   
   # Create a spot where we can store additional
   # reactive values for this session
@@ -49,7 +49,7 @@ shinyServer(function(input, output, session) {
       })
       
       mclust2Dplot(data = data, what = "classification", 
-                   classification = fit$classification, identify = FALSE, 
+                   classification = fit$classification, main = FALSE,
                    xlim=c(-2,2), ylim=c(-2,2))
     }, error=function(warn){
       # Otherwise just plot the points and instructions
@@ -57,4 +57,4 @@ shinyServer(function(input, output, session) {
       text(0, 0, "Unable to create clusters.\nClick to add more points.")
     })
   })
-})
+}

@@ -86,6 +86,7 @@ shinyApp(
                 "log2 (coord_trans())" = "log2_trans",
                 "coord_cartesian()" = "coord_cartesian",
                 "coord_flip()" = "coord_flip",
+                "coord_fixed()" = "coord_fixed",
                 "coord_polar() (doesn't work)" = "coord_polar",
                 "x factor" = "x_factor",
                 "date and time" = "datetime"
@@ -277,13 +278,15 @@ shinyApp(
             pc + scale_x_continuous(trans = scales::log2_trans()) +
                  scale_y_continuous(trans = scales::log2_trans()),
           log10_trans =
-            pc + coord_trans(xtrans = "log10", ytrans = "log10"),
+            pc + coord_trans(x = "log10", y = "log10"),
           log2_trans =
-            pc + coord_trans(xtrans = "log2", ytrans = "log2"),
+            pc + coord_trans(x = "log2", y = "log2"),
           coord_cartesian =
             pc + coord_cartesian(xlim = c(2,4), ylim = c(0,50)),
           coord_flip =
             pc + coord_flip(),
+          coord_fixed =
+            pc + coord_fixed(),
           coord_polar =
             pc + coord_polar(),
           # Discrete x, continuous y

@@ -1,5 +1,5 @@
-shinyUI(fluidPage(
-  titlePanel("Client data and query string example"),
+fluidPage(
+  titlePanel("Image output"),
 
   fluidRow(
     column(4, wellPanel(
@@ -13,4 +13,4 @@ shinyUI(fluidPage(
       imageOutput("image2")
     )
   )
-))
+)
